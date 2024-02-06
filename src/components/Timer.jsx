@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button, Stack } from '@chakra-ui/react'
 
 const Timer = () => {
-
   const [milisecondsPassed, setMilisecondsPassed] = useState(0);
+  const [isStarted, setIsStarted] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef(null);
   const timerLimit = 2000;
 
@@ -11,10 +12,15 @@ const Timer = () => {
     if (milisecondsPassed >= timerLimit) {
       setMilisecondsPassed(timerLimit);
       clearInterval(timerRef.current);
+      setIsStarted(false);
+      setIsPaused(false);
     }
   }, [milisecondsPassed]);
 
   const startTimer = () => {
+    setIsStarted(true);
+    setIsPaused(false);
+
     clearInterval(timerRef.current)
     const startTime = Date.now();
 
@@ -22,18 +28,36 @@ const Timer = () => {
   }
 
   const resumeTimer = () => {
+    setIsPaused(false);
+    setIsStarted(true);
+
     clearInterval(timerRef.current)
     const resumeTime = Date.now() - milisecondsPassed;
     timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - resumeTime) }, 100);
   }
 
   const pauseTimer = () => {
+    setIsStarted(false);
+    setIsPaused(true);
     clearInterval(timerRef.current)
   }
 
   const resetTimer = () => {
+    setIsStarted(false);
+    setIsPaused(false);
+
     clearInterval(timerRef.current)
     setMilisecondsPassed(0)
+  }
+
+  const timerButton = () => {
+    if (isStarted) {
+      return { name: 'PAUSE', action: pauseTimer }
+    } else if (!isStarted && isPaused) {
+      return { name: 'RESUME', action: resumeTimer }
+    } else {
+      return { name: 'START', action: startTimer }
+    }
   }
 
   return (
@@ -43,17 +67,11 @@ const Timer = () => {
       </div>
       <div className="mb-8">
         <Stack direction='row' spacing={4} align='center'>
-          <Button colorScheme='teal' variant='outline' onClick={startTimer}>
-            START
+          <Button colorScheme='teal' variant='outline' onClick={ timerButton().action }>
+            { timerButton().name }
           </Button>
           <Button colorScheme='teal' variant='outline' onClick={resetTimer}>
             RESET
-          </Button>
-          <Button colorScheme='teal' variant='outline' onClick={resumeTimer}>
-            RESUME
-          </Button>
-          <Button colorScheme='teal' variant='outline' onClick={pauseTimer}>
-            PAUSE
           </Button>
         </Stack>
       </div>
