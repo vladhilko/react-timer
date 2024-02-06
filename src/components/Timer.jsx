@@ -24,7 +24,7 @@ const Timer = () => {
     clearInterval(timerRef.current)
     const startTime = Date.now();
 
-    timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - startTime) }, 100);
+    timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - startTime) }, 10);
   }
 
   const resumeTimer = () => {
@@ -33,7 +33,7 @@ const Timer = () => {
 
     clearInterval(timerRef.current)
     const resumeTime = Date.now() - milisecondsPassed;
-    timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - resumeTime) }, 100);
+    timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - resumeTime) }, 10);
   }
 
   const pauseTimer = () => {
@@ -60,8 +60,20 @@ const Timer = () => {
     }
   }
 
+  const msToTime = (duration) => {
+      const milliseconds = Math.floor((duration % 1000) / 10).toString().padStart(2, '0');
+      const seconds = Math.floor((duration / 1000) % 60).toString().padStart(2, '0');
+      const minutes = Math.floor((duration / (1000 * 60)) % 60).toString().padStart(2, '0');
+      const hours = Math.floor((duration / (1000 * 60 * 60)) % 24).toString().padStart(2, '0');
+
+      return `${hours}:${minutes}:${seconds}:${milliseconds}`;
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-emerald-300 text-white">
+      <div className="text-9xl font-mono mb-8">
+        {msToTime(timerLimit - milisecondsPassed)}
+      </div>
       <div className="text-9xl font-mono mb-8">
         {timerLimit - milisecondsPassed}
       </div>
