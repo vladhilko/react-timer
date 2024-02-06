@@ -3,17 +3,28 @@ import { Button, Stack } from '@chakra-ui/react'
 
 const Timer = () => {
 
-  const [seconds, setSeconds] = useState(0);
+  const [milisecondsPassed, setMilisecondsPassed] = useState(0);
   const timerRef = useRef(null);
+  const timerLimit = 2000;
 
   useEffect(() => {
-    timerRef.current = setInterval(resumeCountdown, 1000);
+    if (milisecondsPassed >= timerLimit) {
+      setMilisecondsPassed(timerLimit);
+      clearInterval(timerRef.current);
+    }
+  }, [milisecondsPassed]);
 
-    return () => clearInterval(timerRef.current);
-  }, []);
+  const startTimer = () => {
+    clearInterval(timerRef.current)
+    const startTime = Date.now();
 
-  const resumeCountdown= () => {
-    setSeconds(prevValue => prevValue + 1);
+    timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - startTime) }, 100);
+  }
+
+  const resumeTimer = () => {
+    clearInterval(timerRef.current)
+    const resumeTime = Date.now() - milisecondsPassed;
+    timerRef.current = setInterval(() => { setMilisecondsPassed(() => Date.now() - resumeTime) }, 100);
   }
 
   const pauseTimer = () => {
@@ -22,23 +33,17 @@ const Timer = () => {
 
   const resetTimer = () => {
     clearInterval(timerRef.current)
-    setSeconds(0);
-  }
-
-  const resumeTimer = () => {
-    clearInterval(timerRef.current);
-    resumeCountdown();
-    timerRef.current = setInterval(resumeCountdown, 1000);
+    setMilisecondsPassed(0)
   }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-emerald-300 text-white">
       <div className="text-9xl font-mono mb-8">
-        10:{seconds}
+        {timerLimit - milisecondsPassed}
       </div>
       <div className="mb-8">
         <Stack direction='row' spacing={4} align='center'>
-          <Button colorScheme='teal' variant='outline'>
+          <Button colorScheme='teal' variant='outline' onClick={startTimer}>
             START
           </Button>
           <Button colorScheme='teal' variant='outline' onClick={resetTimer}>
