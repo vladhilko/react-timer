@@ -1,16 +1,13 @@
 import './App.css';
+import { ChakraProvider } from '@chakra-ui/react'
+
 import Timer from './components/Timer';
 
 const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Timer></Timer>
-      </header>
-    </div>
+    <ChakraProvider>
+      <Timer></Timer>
+    </ChakraProvider>
   );
 }
 
