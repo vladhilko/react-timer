@@ -9,9 +9,9 @@ const Timer = () => {
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
+  const [timerLimit, setTimerLimit] = useState(60000);
 
   const timerRef = useRef(null);
-  const timerLimit = 2000;
 
   useEffect(() => {
     if (milisecondsPassed >= timerLimit) {
@@ -66,19 +66,21 @@ const Timer = () => {
   }
 
   const msToTime = (duration) => {
-    const milliseconds = Math.floor((duration % 1000) / 10).toString().padStart(2, '0');
-    const seconds = Math.floor((duration / 1000) % 60).toString().padStart(2, '0');
-    const minutes = Math.floor((duration / (1000 * 60)) % 60).toString().padStart(2, '0');
-    const hours = Math.floor((duration / (1000 * 60 * 60)) % 24).toString().padStart(2, '0');
+    const milliseconds = Math.floor((duration % 1000) / 10);
+    const seconds = Math.floor((duration / 1000) % 60);
+    const minutes = Math.floor((duration / (1000 * 60)) % 60);
+    const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(duration / (1000 * 60 * 60 * 24));
 
-    return `${hours}h ${minutes}m ${seconds}s ${milliseconds}ms`;
-  };
+    let timeString = '';
 
-  const restrictInputSize = (event) => {
-    const { value } = event.target;
-    if (value.length > 2) {
-      event.target.value = value.substring(1)
-    }
+    if (days > 0) timeString += `${days}d `;
+    if (days > 0 || hours > 0) timeString += `${hours.toString().padStart(2, '0')}h `;
+    if (days > 0 || hours > 0 || minutes > 0) timeString += `${minutes.toString().padStart(2, '0')}m `;
+    if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) timeString += `${seconds.toString().padStart(2, '0')}s `;
+    timeString += `${milliseconds.toString().padStart(2, '0')}ms`;
+
+    return timeString.trim();
   };
 
   const handleHoursChange = (e) => {
@@ -116,6 +118,19 @@ const Timer = () => {
     }
   };
 
+  const handleFormSubmit= (e) => {
+    if (e.key === 'Enter') {
+      submitTimerLimit();
+      startTimer();
+    }
+  };
+
+  const submitTimerLimit = () => {
+    // Convert hours, minutes, and seconds to milliseconds and sum them up
+    const totalMilliseconds = (parseInt(hours) || 0) * 3600000 + (parseInt(minutes) || 0) * 60000 + (parseInt(seconds) || 0) * 1000;
+    setTimerLimit(totalMilliseconds);
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-emerald-300 text-white">
       <div className="text-9xl font-mono mb-8">
@@ -126,27 +141,42 @@ const Timer = () => {
           className="text-9xl font-mono mb-8 bg-transparent text-center w-1/3 focus:outline-none focus:border-b-2 focus:border-emerald-600"
           type="number"
           value={hours}
-          onChange={handleHoursChange}
+          onChange={(e) => {
+            handleHoursChange(e);
+          }}
           placeholder="00h"
+          onKeyDown={handleFormSubmit}
         />
+        {hours && <button className="text-9xl font-mono">h</button>}
         <input
           className="text-9xl font-mono mb-8 bg-transparent text-center w-1/3 focus:outline-none focus:border-b-2 focus:border-emerald-600"
           type="number"
           value={minutes}
-          onChange={handleMinutesChange}
+          onChange={(e) => {
+            handleMinutesChange(e);
+          }}
           placeholder="00m"
+          onKeyDown={handleFormSubmit}
         />
+        {minutes && <button className="text-9xl font-mono">m</button>}
+        <div className="flex">
+
+        </div>
         <input
           className="text-9xl font-mono mb-8 bg-transparent text-center w-1/3 focus:outline-none focus:border-b-2 focus:border-emerald-600"
           type="number"
           value={seconds}
-          onChange={handleSecondsChange}
+          onChange={(e) => {
+            handleSecondsChange(e);
+          }}
           placeholder="00s"
+          onKeyDown={handleFormSubmit}
         />
+        {seconds && <button className="text-9xl font-mono">s</button>}
       </div>
       <div className="mb-8">
         <Stack direction='row' spacing={4} align='center'>
-          <Button colorScheme='teal' variant='outline' size='lg' onClick={ timerButton().action }>
+          <Button colorScheme='teal' variant='outline' size='lg' onClick={(e) => { submitTimerLimit(); timerButton().action() }}>
             { timerButton().name }
           </Button>
           <Button colorScheme='teal' variant='outline' size='lg' onClick={resetTimer}>
