@@ -140,51 +140,51 @@ const Timer = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-emerald-300 text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-emerald-300 text-white p-4">
       {!isEditing && (
-        <div className="text-9xl font-mono mb-8" onClick={toggleEditing}>
+        <div
+          className="font-mono mb-8 cursor-pointer text-5xl  md:text-7xl md:leading-snug lg:text-9xl lg:leading-normal xl:text-9xl xl:leading-normal"
+          onClick={toggleEditing}
+        >
           {msToTime(timerLimit - milisecondsPassed)}
         </div>
       )}
 
       {isEditing && (
-        <div className="mb-8 flex">
-          <input
-            className="text-9xl font-mono mb-8 bg-transparent text-center w-1/3 focus:outline-none focus:border-b-2 focus:border-emerald-600"
-            type="number"
-            value={hours}
-            onChange={(e) => {
-              handleHoursChange(e);
-            }}
-            placeholder="00h"
-            onKeyDown={handleFormSubmit}
-          />
-          {hours && <button className="text-9xl font-mono">h</button>}
-          <input
-            className="text-9xl font-mono mb-8 bg-transparent text-center w-1/3 focus:outline-none focus:border-b-2 focus:border-emerald-600"
-            type="number"
-            value={minutes}
-            onChange={(e) => {
-              handleMinutesChange(e);
-            }}
-            placeholder="00m"
-            onKeyDown={handleFormSubmit}
-          />
-          {minutes && <button className="text-9xl font-mono">m</button>}
-          <div className="flex">
-
+        <div className="mb-8 flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0">
+          <div className="flex flex-col items-center space-y-4 w-full md:flex-row md:w-1/3">
+            <input
+              className="text-6xl md:text-9xl font-mono mb-8 bg-transparent text-center w-full focus:outline-none focus:border-b-2 focus:border-emerald-600"
+              type="number"
+              value={hours}
+              onChange={handleHoursChange}
+              placeholder="00h"
+              onKeyDown={handleFormSubmit}
+            />
+            {hours && <button className="text-6xl md:text-9xl font-mono">h</button>}
           </div>
-          <input
-            className="text-9xl font-mono mb-8 bg-transparent text-center w-1/3 focus:outline-none focus:border-b-2 focus:border-emerald-600"
-            type="number"
-            value={seconds}
-            onChange={(e) => {
-              handleSecondsChange(e);
-            }}
-            placeholder="00s"
-            onKeyDown={handleFormSubmit}
-          />
-          {seconds && <button className="text-9xl font-mono">s</button>}
+          <div className="flex flex-col items-center space-y-4 w-full md:flex-row md:w-1/3">
+            <input
+              className="text-6xl md:text-9xl font-mono mb-8 bg-transparent text-center w-full focus:outline-none focus:border-b-2 focus:border-emerald-600"
+              type="number"
+              value={minutes}
+              onChange={handleMinutesChange}
+              placeholder="00m"
+              onKeyDown={handleFormSubmit}
+            />
+            {minutes && <button className="text-6xl md:text-9xl font-mono">m</button>}
+          </div>
+          <div className="flex flex-col items-center space-y-4 w-full md:flex-row md:w-1/3">
+            <input
+              className="text-6xl md:text-9xl font-mono mb-8 bg-transparent text-center w-full focus:outline-none focus:border-b-2 focus:border-emerald-600"
+              type="number"
+              value={seconds}
+              onChange={handleSecondsChange}
+              placeholder="00s"
+              onKeyDown={handleFormSubmit}
+            />
+            {seconds && <button className="text-6xl md:text-9xl font-mono">s</button>}
+          </div>
         </div>
       )}
 
@@ -199,6 +199,7 @@ const Timer = () => {
         </Stack>
       </div>
     </div>
+
   )
 }
 
