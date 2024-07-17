@@ -23,7 +23,7 @@ const Timer = () => {
       setIsStarted(false);
       setIsPaused(false);
     }
-  }, [milisecondsPassed]);
+  }, [milisecondsPassed, timerLimit]);
 
   const startTimer = () => {
     setIsStarted(true);
